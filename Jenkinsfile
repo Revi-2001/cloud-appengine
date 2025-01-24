@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         PROJECT_ID = 'optimistic-yew-442501-g8'
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account')  // Service account credential
+        GOOGLE_APPLICATION_CREDENTIALS = credentials('app-service-account')  // Service account credential
     }
 
     stages {
