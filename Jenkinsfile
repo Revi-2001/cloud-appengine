@@ -25,23 +25,15 @@ pipeline {
                     # Ensure Poetry is in the correct PATH for this session
                     export PATH=\$HOME/.local/bin:\$PATH
                     
-                    # Ensure Poetry is available globally
-                    sudo ln -s \$HOME/.local/bin/poetry /usr/local/bin/poetry
+                    # Ensure Poetry is available globally, but only if it doesn't already exist
+                    if [ ! -f /usr/local/bin/poetry ]; then
+                        sudo ln -s \$HOME/.local/bin/poetry /usr/local/bin/poetry
+                    fi
                     
                     # Debug output to verify path and Poetry installation
                     echo \$PATH
                     poetry --version
                     "
-                    '''
-                }
-            }
-        }
-        stage('Verify Project Structure') {
-            steps {
-                script {
-                    sh '''
-                    # List the project files to verify the location of pyproject.toml
-                    ls -R
                     '''
                 }
             }
