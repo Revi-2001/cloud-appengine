@@ -10,20 +10,18 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Update apt repositories
-                    sudo apt-get update
+                    # Install dependencies within a virtual environment
+                    python3 -m venv venv
+                    source venv/bin/activate
                     
-                    # Install pip for Python 3
-                    sudo apt-get install -y python3-pip
+                    # Upgrade pip
+                    pip install --upgrade pip
                     
                     # Install Poetry
                     curl -sS https://install.python-poetry.org | python3 -
 
                     # Add Poetry to PATH for current session
                     export PATH="$HOME/.local/bin:$PATH"
-                    
-                    # Upgrade pip just in case
-                    python3 -m pip install --upgrade pip
                     '''
                 }
             }
