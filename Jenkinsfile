@@ -10,13 +10,20 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Ensure pip is installed
-                    python3 -m ensurepip --upgrade
-                    python3 -m pip install --upgrade pip
+                    # Update apt repositories
+                    sudo apt-get update
+                    
+                    # Install pip for Python 3
+                    sudo apt-get install -y python3-pip
                     
                     # Install Poetry
                     curl -sS https://install.python-poetry.org | python3 -
-                    export PATH="/var/lib/jenkins/.local/bin:$PATH"
+
+                    # Add Poetry to PATH for current session
+                    export PATH="$HOME/.local/bin:$PATH"
+                    
+                    # Upgrade pip just in case
+                    python3 -m pip install --upgrade pip
                     '''
                 }
             }
@@ -25,7 +32,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Run your tests here
+                    # Run your tests using Poetry
                     poetry run pytest
                     '''
                 }
@@ -35,7 +42,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Deploy to App Engine
+                    # Deploy to App Engine using Poetry
                     poetry run gcloud app deploy
                     '''
                 }
