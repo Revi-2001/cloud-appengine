@@ -22,8 +22,9 @@ pipeline {
                     # Install Poetry
                     curl -sS https://install.python-poetry.org | python3 -
                     
-                    # Add Poetry to PATH for current session
+                    # Ensure Poetry is in the PATH
                     export PATH="$HOME/.local/bin:$PATH"
+                    echo \$PATH  # Debug output to verify if poetry is in the PATH
                     "
                     '''
                 }
@@ -34,7 +35,7 @@ pipeline {
                 script {
                     sh '''
                     # Run your tests using Poetry
-                    poetry run pytest
+                    /bin/bash -c "poetry run pytest"
                     '''
                 }
             }
@@ -44,7 +45,7 @@ pipeline {
                 script {
                     sh '''
                     # Deploy to App Engine using Poetry
-                    poetry run gcloud app deploy
+                    /bin/bash -c "poetry run gcloud app deploy"
                     '''
                 }
             }
