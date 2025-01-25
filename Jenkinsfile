@@ -11,8 +11,8 @@ pipeline {
                 script {
                     sh '''
                     # Update package manager and install pip if not present
-                    sudo apt update
-                    sudo apt install -y python3-pip python3-venv
+                    apt update
+                    apt install -y python3-pip python3-venv
 
                     # Create and activate a virtual environment
                     python3 -m venv venv
@@ -25,7 +25,6 @@ pipeline {
                     pip install poetry
 
                     # Ensure Poetry is available in the virtual environment
-                    source venv/bin/activate
                     poetry --version
                     '''
                 }
