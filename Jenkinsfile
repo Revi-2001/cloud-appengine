@@ -19,14 +19,17 @@ pipeline {
                     # Upgrade pip
                     pip install --upgrade pip
                     
-                    # Install Poetry
+                    # Install Poetry globally
                     curl -sS https://install.python-poetry.org | python3 -
                     
                     # Ensure Poetry is in the correct PATH for this session
                     export PATH=\$HOME/.local/bin:\$PATH
-                    echo \$PATH  # Debug output to verify the correct path
-
-                    # Verify Poetry installation
+                    
+                    # Ensure Poetry is available globally
+                    sudo ln -s \$HOME/.local/bin/poetry /usr/local/bin/poetry
+                    
+                    # Debug output to verify path and Poetry installation
+                    echo \$PATH
                     poetry --version
                     "
                     '''
