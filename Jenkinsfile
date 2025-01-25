@@ -36,6 +36,16 @@ pipeline {
                 }
             }
         }
+        stage('Verify Project Structure') {
+            steps {
+                script {
+                    sh '''
+                    # List the project files to verify the location of pyproject.toml
+                    ls -R
+                    '''
+                }
+            }
+        }
         stage('Run Tests') {
             steps {
                 script {
