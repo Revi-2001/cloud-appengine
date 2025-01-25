@@ -1,67 +1,51 @@
 pipeline {
     agent any
-
-    environment {
-        PROJECT_ID = 'optimistic-yew-442501-g8'
-        GOOGLE_APPLICATION_CREDENTIALS = credentials('gcp-service-account')  // Service account credential
-    }
-
     stages {
         stage('Clone Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/Revi-2001/cloud-appengine.git'
+                git url: 'https://github.com/Revi-2001/cloud-appengine.git', branch: 'main'
             }
         }
-
         stage('Install Dependencies') {
             steps {
                 script {
-                    // Install Python and pip locally (without sudo)
                     sh '''
+                    # Ensure pip is installed
+                    python3 -m ensurepip --upgrade
+                    python3 -m pip install --upgrade pip
+                    
+                    # Install Poetry
                     curl -sS https://install.python-poetry.org | python3 -
-                    export PATH="$HOME/.local/bin:$PATH"
-                    pip install --upgrade pip
-                    pip install -r requirements.txt
+                    export PATH="/var/lib/jenkins/.local/bin:$PATH"
                     '''
                 }
             }
         }
-
         stage('Run Tests') {
             steps {
                 script {
-                    // Run your tests here (if any)
-                    sh 'pytest'
+                    sh '''
+                    # Run your tests here
+                    poetry run pytest
+                    '''
                 }
             }
         }
-
         stage('Deploy to Google App Engine') {
             steps {
                 script {
-                    // Authenticate with Google Cloud
-                    sh 'gcloud auth activate-service-account --key-file=${GOOGLE_APPLICATION_CREDENTIALS}'
-
-                    // Set project ID
-                    sh 'gcloud config set project $PROJECT_ID'
-
-                    // Deploy to App Engine
-                    sh 'gcloud app browse'
+                    sh '''
+                    # Deploy to App Engine
+                    poetry run gcloud app deploy
+                    '''
                 }
             }
         }
     }
-
     post {
         always {
             echo 'Cleaning up...'
-            // Optional: Clean up after the pipeline
         }
-
-        success {
-            echo 'Deployment successful!'
-        }
-
         failure {
             echo 'Deployment failed!'
         }
