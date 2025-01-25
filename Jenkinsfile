@@ -10,13 +10,23 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Ensure pip is installed
-                    python3 -m ensurepip --upgrade
-                    python3 -m pip install --upgrade pip
-                    
-                    # Install Poetry
-                    curl -sS https://install.python-poetry.org | python3 -
-                    export PATH="/var/lib/jenkins/.local/bin:$PATH"
+                    # Update package manager and install pip if not present
+                    sudo apt update
+                    sudo apt install -y python3-pip python3-venv
+
+                    # Create and activate a virtual environment
+                    python3 -m venv venv
+                    source venv/bin/activate
+
+                    # Upgrade pip in the virtual environment
+                    pip install --upgrade pip
+
+                    # Install Poetry in the virtual environment
+                    pip install poetry
+
+                    # Ensure Poetry is available in the virtual environment
+                    source venv/bin/activate
+                    poetry --version
                     '''
                 }
             }
@@ -25,7 +35,13 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Run your tests here
+                    # Activate the virtual environment
+                    source venv/bin/activate
+
+                    # Install project dependencies using Poetry
+                    poetry install
+
+                    # Run tests
                     poetry run pytest
                     '''
                 }
@@ -35,7 +51,10 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Deploy to App Engine
+                    # Activate the virtual environment
+                    source venv/bin/activate
+
+                    # Deploy to Google App Engine
                     poetry run gcloud app deploy
                     '''
                 }
