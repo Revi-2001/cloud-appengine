@@ -10,7 +10,9 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Install dependencies within a virtual environment
+                    # Use bash to run the commands
+                    /bin/bash -c "
+                    # Create a virtual environment
                     python3 -m venv venv
                     source venv/bin/activate
                     
@@ -19,9 +21,10 @@ pipeline {
                     
                     # Install Poetry
                     curl -sS https://install.python-poetry.org | python3 -
-
+                    
                     # Add Poetry to PATH for current session
                     export PATH="$HOME/.local/bin:$PATH"
+                    "
                     '''
                 }
             }
