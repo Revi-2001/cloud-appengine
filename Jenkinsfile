@@ -22,9 +22,12 @@ pipeline {
                     # Install Poetry
                     curl -sS https://install.python-poetry.org | python3 -
                     
-                    # Ensure Poetry is in the PATH
-                    export PATH="$HOME/.local/bin:$PATH"
-                    echo \$PATH  # Debug output to verify if poetry is in the PATH
+                    # Ensure Poetry is in the correct PATH for this session
+                    export PATH=\$HOME/.local/bin:\$PATH
+                    echo \$PATH  # Debug output to verify the correct path
+
+                    # Verify Poetry installation
+                    poetry --version
                     "
                     '''
                 }
@@ -34,7 +37,7 @@ pipeline {
             steps {
                 script {
                     sh '''
-                    # Run your tests using Poetry
+                    # Run tests using Poetry
                     /bin/bash -c "poetry run pytest"
                     '''
                 }
